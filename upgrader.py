@@ -1,0 +1,91 @@
+from pathlib import Path
+
+
+# The complete demo page is embedded so this file can run without dependencies.
+PAGE = r'''<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>UPGRADER // Skin Lab</title>
+	<style>
+		:root{--bg:#111318;--panel:#1a1e25;--line:#303640;--text:#f0f1ec;--muted:#9299a4;--cyan:#67e4d7;--orange:#ff8761;--yellow:#f5cd62}
+		*{box-sizing:border-box} body{margin:0;background:var(--bg);color:var(--text);font:14px Arial,sans-serif;min-width:320px}
+		body:before{content:"";position:fixed;inset:0;pointer-events:none;opacity:.35;background-image:linear-gradient(#fff1 1px,transparent 1px),linear-gradient(90deg,#fff1 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(#000,transparent 80%)}
+		.wrap{max-width:1180px;margin:auto;padding:0 28px}.top{height:76px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between}.logo{font-size:16px;font-weight:bold;letter-spacing:4px}.logo b{display:inline-grid;place-items:center;width:28px;height:28px;margin-right:9px;background:var(--cyan);color:var(--bg);transform:skew(-8deg)}.pill{border:1px solid var(--line);padding:9px 12px;color:var(--muted);font-size:11px;letter-spacing:1px}.pill strong{color:var(--cyan);margin-left:12px}.hero{padding:70px 0 45px;display:flex;justify-content:space-between;align-items:end;gap:24px}.eyebrow{color:var(--cyan);font-size:10px;font-weight:bold;letter-spacing:2px}.hero h1{font-size:clamp(52px,9vw,102px);line-height:.84;margin:15px 0 20px;letter-spacing:-4px;text-transform:uppercase}.hero h1 em{color:var(--orange);font-style:normal}.hero p{max-width:480px;color:var(--muted);line-height:1.7;margin:0}.high{border-right:2px solid var(--orange);padding:4px 14px;text-align:right;white-space:nowrap}.high small{display:block;color:var(--muted);font-size:10px;letter-spacing:2px}.high strong{display:block;color:var(--orange);font-size:28px;margin:4px 0}
+		.game{display:grid;grid-template-columns:1fr 220px 1fr;gap:16px;align-items:stretch}.panel{background:linear-gradient(135deg,#ffffff0b,#ffffff02);border:1px solid var(--line);padding:20px}.label{color:var(--orange);font-size:10px;letter-spacing:2px;font-weight:bold;margin-bottom:7px}.panel h2{font-size:22px;text-transform:uppercase;margin:0 0 22px}.cards{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.card,.target{border:1px solid var(--line);background:#0002;cursor:pointer;transition:.2s}.card:hover,.target:hover{border-color:#67e4d799;transform:translateY(-2px)}.selected{border-color:var(--cyan)!important;background:#67e4d710}.art{aspect-ratio:1.6;position:relative;overflow:hidden;background:var(--artbg)}.art:before{content:"";position:absolute;width:82%;height:32%;top:33%;left:9%;transform:rotate(-9deg);border-radius:70% 10% 15% 10%;background:linear-gradient(110deg,var(--a),var(--b));box-shadow:12px 13px #0004}.art:after{content:"";position:absolute;width:36%;height:5px;left:22%;top:48%;transform:rotate(-9deg);background:#fff9;box-shadow:38px 8px #0005}.info{padding:10px}.info strong{display:block;font-size:11px}.info small{display:block;color:var(--muted);font-size:10px;margin-top:5px}.target{display:flex;align-items:center;gap:10px;padding:9px;margin-bottom:9px}.target .art{width:80px;flex:none}.target .info{padding:0;min-width:0}.target .info strong{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.price{margin-left:auto;color:var(--yellow);font-size:11px;white-space:nowrap}
+		.core{border-top:1px solid var(--line);border-bottom:1px solid var(--line);display:flex;flex-direction:column;justify-content:center;align-items:center;position:relative;overflow:hidden;background:radial-gradient(circle,#67e4d71f,transparent 65%);min-height:350px}.core:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#67e4d712 1px,transparent 1px),linear-gradient(90deg,#67e4d712 1px,transparent 1px);background-size:25px 25px;mask-image:radial-gradient(circle,#000,transparent 70%)}.orb{width:142px;height:142px;border:1px solid #67e4d799;border-radius:50%;display:grid;place-items:center;position:relative;z-index:1;box-shadow:0 0 40px #67e4d722;margin-bottom:25px}.orb:before{content:"";position:absolute;inset:13px;border:1px dashed #ff876177;border-radius:50%;animation:spin 6s linear infinite}.orb div{width:82px;height:82px;border-radius:50%;border:1px solid var(--cyan);background:var(--bg);display:grid;place-items:center;align-content:center}.orb b{font-size:34px;color:var(--cyan)}.orb small{font-size:8px;color:var(--muted);letter-spacing:2px}.core>small{color:var(--muted);font-size:9px;letter-spacing:2px;position:absolute;top:17px}.chance{text-align:center;z-index:1}.chance span,.chance small{display:block;color:var(--muted);font-size:9px;letter-spacing:1px}.chance strong{font-size:30px;display:block;margin:5px}.button{width:100%;border:0;background:var(--cyan);color:var(--bg);padding:14px;margin-top:18px;font-weight:bold;text-transform:uppercase;letter-spacing:1px;cursor:pointer}.button:disabled{opacity:.35;cursor:not-allowed}.note{text-align:center;color:var(--muted);font-size:9px;line-height:1.5}.result{border-bottom:1px solid var(--line);min-height:78px;display:flex;align-items:center;gap:14px}.result b{font-size:13px}.result span{display:block;color:var(--muted);font-size:11px;margin-top:5px}.result strong{margin-left:auto;color:var(--cyan);font-size:25px}.feed{margin:46px 0 75px;border:1px solid var(--line);padding:20px}.feed h2{margin:0 0 17px;text-transform:uppercase;font-size:20px}.row{display:grid;grid-template-columns:30px 1fr auto;gap:10px;border-top:1px solid var(--line);padding:12px 0;font-size:11px}.row i{font-style:normal;color:var(--muted);font-weight:bold}.row small{display:block;color:var(--muted);margin-top:4px;font-size:9px}.win{color:var(--cyan)}.loss{color:var(--orange)}footer{border-top:1px solid var(--line);padding:20px 0 28px;color:var(--muted);font-size:9px;letter-spacing:1px;display:flex;justify-content:space-between}
+		@keyframes spin{to{transform:rotate(360deg)}}@media(max-width:950px){.game{grid-template-columns:1fr 1fr}.core{grid-column:1/-1;grid-row:2;min-height:260px}.target{margin-bottom:7px}}@media(max-width:620px){.wrap{padding:0 16px}.top{height:65px}.pill{font-size:0}.pill strong{font-size:11px;margin:0}.hero{display:block;padding:48px 0 35px}.hero h1{font-size:65px}.high{text-align:left;border-right:0;border-left:2px solid var(--orange);margin-top:28px}.game{display:block}.core{margin:16px 0;min-height:260px}.result{padding:16px 0}.result strong{font-size:20px}footer{display:block;line-height:2}}
+		.account-gate{position:fixed;inset:0;z-index:10;background:#111318f7;display:grid;place-items:center;padding:22px}.account-box{width:min(440px,100%);border:1px solid var(--cyan);background:var(--panel);padding:32px;box-shadow:0 0 60px #67e4d71a}.account-box h1{font-size:48px;line-height:.85;margin:12px 0 17px;text-transform:uppercase}.account-box h1 em{color:var(--orange);font-style:normal}.account-box p{color:var(--muted);font-size:12px;line-height:1.6}.account-box label{display:block;color:var(--cyan);font-size:10px;letter-spacing:2px;margin:24px 0 8px}.account-box input{width:100%;border:1px solid var(--line);background:#111318;color:var(--text);padding:14px;font:inherit;outline:none}.account-box input:focus{border-color:var(--cyan)}.account-box .button{margin-top:14px}.account-box small{display:block;color:var(--muted);font-size:9px;margin-top:13px;line-height:1.5}.account-link{background:none;border:0;color:var(--muted);cursor:pointer;font-size:9px;text-decoration:underline;margin-top:16px}.account-link:hover{color:var(--paper)}.hidden{display:none!important}
+	</style>
+</head>
+<body>
+<section class="account-gate" id="accountGate">
+	<div class="account-box">
+		<div class="eyebrow">WELCOME TO UPSHIFT</div>
+		<h1>Your lab.<br><em>Your run.</em></h1>
+		<p>Create a local demo account to enter the upgrade lab. Your name, credits, results, and activity will be remembered in this browser.</p>
+		<form id="accountForm">
+			<label for="accountName">PLAYER NAME</label>
+			<input id="accountName" type="text" maxlength="24" autocomplete="nickname" placeholder="Enter a player name" required>
+			<button class="button" type="submit">Enter the lab ↗</button>
+		</form>
+		<small>Demo account only. No password, payments, Steam connection, or real item ownership.</small>
+	</div>
+</section>
+<div class="wrap">
+	<header class="top"><div class="logo"><b>U</b>UPSHIFT</div><div class="pill"><span id="playerName">DEMO PLAYER</span> <strong id="balance">2,500 credits</strong></div></header>
+	<section class="hero"><div><div class="eyebrow">CS2 SKIN UPGRADE LAB</div><h1>Make it<br><em>count.</em></h1><p>Choose an input, pick a target, and let the upgrade core decide. Fictional skins and demo credits only.</p></div><div class="high"><small>SESSION HIGH</small><strong id="high">0 credits</strong><small>BEST TARGET WON</small></div></section>
+	<section class="game">
+		<div class="panel"><div class="label">01 / LOADOUT</div><h2>Your input skin</h2><div class="cards" id="inputs"></div></div>
+		<div class="core"><small>UPGRADE CORE</small><div class="orb" id="orb"><div><b>?</b><small>READY</small></div></div><div class="chance"><span>SUCCESS CHANCE</span><strong id="chance">--</strong><small id="hint">Select a target to calculate</small></div></div>
+		<div class="panel"><div class="label">02 / TARGET</div><h2>Where are we going?</h2><div id="targets"></div><button class="button" id="run" disabled>↗ &nbsp; Run upgrade <span id="cost">0 cr</span></button><p class="note">Demo credits only. No deposits, withdrawals, or item trading.</p></div>
+	</section>
+	<section class="result"><b id="resultIcon">✦</b><div><b id="resultTitle">The lab is ready.</b><span id="resultText">Choose an input and target to calculate your upgrade.</span></div><strong id="resultValue">—</strong></section>
+	<section class="feed"><div class="label">SESSION FEED</div><h2>Recent upgrade activity</h2><div id="feed"></div></section>
+	<footer><span>UPSHIFT / PROTOTYPE 01</span><span>FICTIONAL ITEMS · FICTIONAL CREDITS</span><button class="account-link" id="resetAccount" type="button">Reset local account</button></footer>
+</div>
+<script>
+// These fictional items define the upgrade values and visual color palettes.
+const inputs=[{name:'Neon Circuit',type:'SMG / RARE',value:180,a:'#36d4c3',b:'#154a62',bg:'#14252b'},{name:'Rustline',type:'RIFLE / RESTRICTED',value:340,a:'#ff9d5c',b:'#6e2428',bg:'#2b1c1c'},{name:'Cold Bloom',type:'PISTOL / RARE',value:520,a:'#d8e8ed',b:'#4876ab',bg:'#202b3a'},{name:'Heat Check',type:'GLOVE / CLASSIFIED',value:760,a:'#ffcc62',b:'#e45b43',bg:'#34251d'}];
+const targets=[{name:'Violet Static',type:'RIFLE / CLASSIFIED',value:620,a:'#d379ff',b:'#3434a4',bg:'#24203b'},{name:'Carbon Bloom',type:'KNIFE / COVERT',value:950,a:'#67e4d7',b:'#294e70',bg:'#172f39'},{name:'Solar Fang',type:'KNIFE / COVERT',value:1400,a:'#ffe174',b:'#f15e45',bg:'#38251f'}];
+let balance=2500,selectedInput=null,selectedTarget=null,high=0,activity=[];
+const $=id=>document.getElementById(id), money=n=>n.toLocaleString()+' credits';
+const accountKey='upshift-demo-account';
+
+// Save the local demo account and all progress in this browser.
+function saveState(){localStorage.setItem(accountKey,JSON.stringify({name:localStorage.getItem(accountKey+'_name'),balance,selectedInput,selectedTarget,high,activity}));}
+function loadState(name){const saved=localStorage.getItem(accountKey);if(!saved)return false;try{const state=JSON.parse(saved);if(state.name!==name)return false;balance=state.balance??2500;selectedInput=state.selectedInput??null;selectedTarget=state.selectedTarget??null;high=state.high??0;activity=state.activity??[];$('playerName').textContent=state.name;return true;}catch(error){localStorage.removeItem(accountKey);return false;}}
+function renderFeed(){ $('feed').innerHTML=activity.map(item=>`<div class="row"><i>${item.ok?'↗':'×'}</i><div>${item.text}<small>${item.time}</small></div><b class="${item.ok?'win':'loss'}">${item.amount}</b></div>`).join(''); }
+function art(item){return `<div class="art" style="--a:${item.a};--b:${item.b};--artbg:${item.bg}"></div>`}
+// Render the cards and keep the controls synchronized with the current choices.
+function draw(){
+	$('inputs').innerHTML=inputs.map((x,i)=>`<div class="card ${selectedInput===i?'selected':''}" data-input="${i}">${art(x)}<div class="info"><strong>${x.name}</strong><small>${x.type} · ${x.value} cr</small></div></div>`).join('');
+	$('targets').innerHTML=targets.map((x,i)=>`<div class="target ${selectedTarget===i?'selected':''}" data-target="${i}">${art(x)}<div class="info"><strong>${x.name}</strong><small>${x.type}</small></div><span class="price">${x.value} cr</span></div>`).join('');
+	document.querySelectorAll('[data-input]').forEach(x=>x.onclick=()=>{selectedInput=+x.dataset.input;draw();});
+	document.querySelectorAll('[data-target]').forEach(x=>x.onclick=()=>{selectedTarget=+x.dataset.target;draw();});
+	$('balance').textContent=money(balance); $('high').textContent=money(high);
+	renderFeed(); saveState();
+	const input=inputs[selectedInput],target=targets[selectedTarget];
+	if(input&&target){const chance=Math.max(8,Math.min(86,Math.round(input.value/target.value*86)));$('chance').textContent=chance+'%';$('hint').textContent='Risk cost: '+input.value+' credits';$('cost').textContent=input.value+' cr';$('run').disabled=balance<input.value;}
+	else {$('chance').textContent='--';$('hint').textContent='Select a target to calculate';$('cost').textContent='0 cr';$('run').disabled=true;}
+}
+function addFeed(text,amount,ok){activity.unshift({text,amount,ok,time:'just now · demo session'});activity=activity.slice(0,4);renderFeed();saveState();}
+// Spend the input value, animate the core, and resolve the fictional outcome.
+$('run').onclick=()=>{const input=inputs[selectedInput],target=targets[selectedTarget];if(!input||!target)return;const chance=Math.max(8,Math.min(86,Math.round(input.value/target.value*86)));balance-=input.value;$('run').disabled=true;$('orb').style.animation='spin .55s linear infinite';$('resultTitle').textContent='Core is running...';$('resultText').textContent='Calculating your upgrade outcome.';setTimeout(()=>{const win=Math.random()*100<chance;$('orb').style.animation='';if(win){balance+=target.value;high=Math.max(high,target.value);$('resultIcon').textContent='✦';$('resultTitle').textContent='Upgrade successful.';$('resultText').textContent=input.name+' became '+target.name+'.';$('resultValue').textContent='+'+target.value+' cr';addFeed('Won '+target.name,'+'+target.value+' cr',true);}else{$('resultIcon').textContent='×';$('resultTitle').textContent='The core missed.';$('resultText').textContent=input.name+' did not make the jump this time.';$('resultValue').textContent='-'+input.value+' cr';addFeed('Lost '+input.name,'-'+input.value+' cr',false);}draw();},700);};
+$('accountName').value=localStorage.getItem(accountKey+'_name')||'';
+$('accountForm').onsubmit=event=>{event.preventDefault();const name=$('accountName').value.trim();if(!name)return;const returningPlayer=loadState(name);if(!returningPlayer){balance=2500;selectedInput=null;selectedTarget=null;high=0;activity=[];}$('playerName').textContent=name;localStorage.setItem(accountKey+'_name',name);saveState();$('accountGate').classList.add('hidden');draw();};
+$('resetAccount').onclick=()=>{if(confirm('Reset this local demo account and all saved progress?')){localStorage.removeItem(accountKey);localStorage.removeItem(accountKey+'_name');location.reload();}};
+</script>
+</body></html>'''
+
+
+def create_html_file():
+	"""Write the embedded game page next to this Python script."""
+	output_path = Path(__file__).with_name("upgrader.html")
+	output_path.write_text(PAGE, encoding="utf-8")
+	print(f"Created {output_path}")
+
+
+if __name__ == "__main__":
+	create_html_file()
