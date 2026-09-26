@@ -1,0 +1,19 @@
+{
+  "name": "UPSHIFT Upgrade Lab",
+  "short_name": "UPSHIFT",
+  "description": "A mobile upgrade lab for fictional weapon skins.",
+  "start_url": "/upgrader",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#111318",
+  "theme_color": "#111318",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}
