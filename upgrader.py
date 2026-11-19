@@ -106,6 +106,9 @@ $('resetAccount').onclick=()=>{if(confirm('Reset this local demo account and all
 def create_html_file():
 	"""Write the embedded game page next to this Python script."""
 	output_path = Path(__file__).with_name("upgrader.html")
+	if output_path.exists():
+		print(f"Keeping existing {output_path}")
+		return
 	output_path.write_text(PAGE, encoding="utf-8")
 	print(f"Created {output_path}")
 
